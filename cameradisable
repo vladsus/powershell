@@ -1,0 +1,10 @@
+# Import the Device Management module
+Import-Module DeviceManagement
+
+# Get the list of camera devices
+$cameras = Get-Device -Class Camera
+
+# Disable each camera device
+foreach ($camera in $cameras) {
+    Disable-Device -InstanceId $camera.InstanceId
+}
