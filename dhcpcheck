@@ -1,0 +1,18 @@
+# Import the DhcpServer module
+Import-Module DhcpServer
+
+# Get the DHCP scopes
+$Scopes = Get-DhcpServerv4Scope
+
+# Check if there are any DHCP scopes
+if ($Scopes) {
+    # DHCP is enabled
+    Write-Output "DHCP is enabled"
+
+    # Get the DHCP server
+    $Server = $Scopes[0].ServerName
+    Write-Output "DHCP server: $Server"
+} else {
+    # DHCP is not enabled
+    Write-Output "DHCP is not enabled"
+}
