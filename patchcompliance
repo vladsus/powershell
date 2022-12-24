@@ -1,0 +1,18 @@
+# Import the required modules
+Import-Module PSWorkflow
+Import-Module PSWorkflowUtility
+
+# Define the maximum age of the patches (in days)
+$maxAge = 30
+
+# Get the current date and subtract the maximum age
+$date = (Get-Date).AddDays(-$maxAge)
+
+# Get the list of missing patches
+$patches = Get-WmiObject -Class Win32_QuickFixEngineering | Where-Object {
+    $_.InstalledOn -lt $date -and ($_.HotFixID -like "*KB*" -or $_.HotFixID -like "*SEC*") -and ($_.Description -like "*critical*" -or $_.Description -like "*important*")
+}
+
+# Print the list of missing patches
+Write-Output "Missing critical and important patches released over $maxAge days ago:"
+Write-Output $patches | Select-Object -Property HotFixID, Description, InstalledOn
