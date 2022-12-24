@@ -1,0 +1,18 @@
+Import-Module ActiveDirectory
+
+# Set the maximum number of days since last logon
+$maxDaysSinceLogon = 180
+
+# Search for users who haven't logged on in the specified number of days
+$inactiveUsers = Search-ADAccount -AccountInactive -TimeSpan ("$maxDaysSinceLogon"+"."+"00:00:00") | Where-Object {$_.ObjectClass -eq "user"}
+
+# Check if any inactive users were found
+if ($inactiveUsers -eq $null) {
+  Write-Output "No inactive users were found."
+} else {
+  # Lock the accounts of inactive users
+  $inactiveUsers | Unlock-ADAccount -ErrorAction SilentlyContinue
+  $inactiveUsers | Set-ADAccountControl -Enabled $false -ErrorAction SilentlyContinue
+  # Print the names and accounts of inactive users
+  $inactiveUsers | Select-Object Name, SamAccountName | Format-Table
+}
