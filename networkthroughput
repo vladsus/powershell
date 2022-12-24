@@ -1,0 +1,19 @@
+# Get the list of network adapters
+$Adapters = Get-WmiObject -Class Win32_PerfFormattedData_Tcpip_NetworkInterface
+
+# Iterate through each adapter and display the throughput information
+foreach ($Adapter in $Adapters) {
+    # Calculate the inbound and outbound throughput
+    $InboundThroughput = [Math]::Round(($Adapter.BytesReceivedPerSec / 1024), 2)
+    $OutboundThroughput = [Math]::Round(($Adapter.BytesSentPerSec / 1024), 2)
+
+    # Calculate the throughput percentage
+    $TotalThroughput = $InboundThroughput + $OutboundThroughput
+    $ThroughputPercent = [Math]::Round((($TotalThroughput / $Adapter.Speed) * 100), 2)
+
+    # Display the throughput information
+    Write-Output "Adapter: $($Adapter.Name)"
+    Write-Output "Inbound throughput (KB/s): $InboundThroughput"
+    Write-Output "Outbound throughput (KB/s): $OutboundThroughput"
+    Write-Output "Throughput percentage: $ThroughputPercent%"
+}
