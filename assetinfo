@@ -1,26 +1,35 @@
-# Import the necessary module
-Import-Module -Name 'CIMCmdlets'
+# Get the computer name
+$computerName = Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty Name
 
-# Get the computer's hardware information
-$hardware = Get-CimInstance -ClassName 'Win32_ComputerSystem'
+# Get the serial number
+$serialNumber = Get-WmiObject -Class Win32_BIOS | Select-Object -ExpandProperty SerialNumber
 
-# Get the computer's operating system information
-$os = Get-CimInstance -ClassName 'Win32_OperatingSystem'
+# Get the OS platform
+$osPlatform = (Get-WmiObject -Class Win32_OperatingSystem).OSArchitecture
 
-# Get the computer's network information
-$network = Get-CimInstance -ClassName 'Win32_NetworkAdapterConfiguration' | Where-Object {$_.IPEnabled -eq $true}
+# Get the operating system
+$operatingSystem = (Get-WmiObject -Class Win32_OperatingSystem).Caption
 
-# Print the asset information
-Write-Output "Hardware Information:"
-Write-Output "  Manufacturer: $($hardware.Manufacturer)"
-Write-Output "  Model: $($hardware.Model)"
-Write-Output "  Processor: $($hardware.NumberOfProcessors) x $($hardware.Processor)"
-Write-Output "  Memory: $([Math]::Round($hardware.TotalPhysicalMemory/1GB,2)) GB"
-Write-Output "Operating System Information:"
-Write-Output "  Name: $($os.Caption)"
-Write-Output "  Version: $($os.Version)"
-Write-Output "  Architecture: $($os.OSArchitecture)"
-Write-Output "Network Information:"
-Write-Output "  IP Address: $($network.IPAddress[0])"
-Write-Output "  Subnet Mask: $($network.IPSubnet[0])"
-Write-Output "  Default Gateway: $($network.DefaultIPGateway[0])"
+# Get the service pack
+$servicePack = (Get-WmiObject -Class Win32_OperatingSystem).ServicePackMajorVersion
+
+# Get the manufacturer
+$manufacturer = Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty Manufacturer
+
+# Get the IP address
+$ipAddress = (Get-WmiObject -Class Win32_NetworkAdapterConfiguration | Where-Object {
+  $_.IPAddress
+}).IPAddress[0]
+
+# Get the last logged in user
+$lastLoggedInUser = Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty UserName
+
+# Print the details
+Write-Output "Computer Name: $computerName"
+Write-Output "Serial Number: $serialNumber"
+Write-Output "OS Platform: $osPlatform"
+Write-Output "Operating System: $operatingSystem"
+Write-Output "Service Pack: $servicePack"
+Write-Output "Manufacturer: $manufacturer"
+Write-Output "IP Address: $ipAddress"
+Write-Output "Last Logged In User: $lastLoggedInUser"
