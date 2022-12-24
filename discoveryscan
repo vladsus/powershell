@@ -1,0 +1,44 @@
+# Import the required modules
+Import-Module NetAdapter
+Import-Module NetTCPIP
+
+# Get the list of adapters on the local machine
+$adapters = Get-NetAdapter
+
+# Prompt the user for the ports to scan
+$ports = Read-Host "Enter the ports to scan, separated by commas (e.g. 22, 80, 443)"
+
+# Convert the ports string into an array of integers
+$ports = $ports -split ',' | % { [int]$_ }
+
+# Loop through each adapter and get its MAC address, IP address, and manufacturer
+foreach ($adapter in $adapters) {
+    $macAddress = $adapter.MacAddress
+    $ipAddress = $adapter.IPAddress
+    $manufacturer = $adapter.Manufacturer
+
+    # Use the MAC address to get the host name and OS detection for the device
+    $hostName = [System.Net.Dns]::GetHostByAddress($ipAddress).HostName
+    $os = Get-WmiObject -Class Win32_OperatingSystem -ComputerName $ipAddress
+
+    # Print the results
+    Write-Output "MAC address: $macAddress"
+    Write-Output "IP address: $ipAddress"
+    Write-Output "Manufacturer: $manufacturer"
+    Write-Output "Host name: $hostName"
+    Write-Output "OS: $($os.Caption) $($os.OSArchitecture)"
+
+    # Perform a port scan on the device for the specified ports
+    Write-Output "Port scan:"
+    foreach ($port in $ports) {
+        $connection = New-Object System.Net.Sockets.TcpClient
+        try {
+            $connection.Connect($ipAddress, $port)
+            Write-Output "  Port $port: Open"
+        } catch {
+            Write-Output "  Port $port: Closed"
+        } finally {
+            $connection.Close()
+        }
+    }
+}
