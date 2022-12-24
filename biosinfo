@@ -1,0 +1,9 @@
+# Get the BIOS information
+$BIOS = Get-WmiObject -Class Win32_BIOS
+
+# Display the BIOS current language, name, release date, vendor, and version
+Write-Output "Current language: $($BIOS.CurrentLanguage)"
+Write-Output "Name: $($BIOS.Name)"
+Write-Output "Release date: $($BIOS.ReleaseDate)"
+Write-Output "Vendor: $($BIOS.Manufacturer)"
+Write-Output "Version: $($BIOS.SMBIOSBIOSVersion)"
