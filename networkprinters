@@ -1,0 +1,14 @@
+# Get the list of printers
+$Printers = Get-WmiObject -Class Win32_Printer
+
+# Iterate through each printer and display the name and network status
+foreach ($Printer in $Printers) {
+    # Check if the printer is a network printer
+    if ($Printer.Network) {
+        # The printer is a network printer
+        Write-Output "Name: $($Printer.Name)  Network: Yes"
+    } else {
+        # The printer is not a network printer
+        Write-Output "Name: $($Printer.Name)  Network: No"
+    }
+}
