@@ -1,0 +1,11 @@
+# Get the battery status information
+$BatteryStatus = Get-WmiObject -Class Win32_Battery
+
+# Check if the battery status information was returned
+if ($BatteryStatus) {
+    # The machine has an attached battery
+    Write-Output "The machine has an attached battery"
+} else {
+    # The machine does not have an attached battery
+    Write-Output "The machine does not have an attached battery"
+}
