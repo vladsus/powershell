@@ -1,0 +1,22 @@
+# Import the required modules
+Import-Module PSWorkflow
+Import-Module PSWorkflowUtility
+
+# Prompt the user for the start and end dates
+$startDate = Read-Host "Enter the start date (e.g. 01/01/2022)"
+$endDate = Read-Host "Enter the end date (e.g. 01/31/2022)"
+
+# Create a workflow to show the lockout events
+Workflow Show-LockoutEvents {
+    # Get the lockout events from the security event log
+    $events = Get-EventLog -LogName Security -InstanceId 4740 -After $startDate -Before $endDate | Select-Object -Property TimeGenerated, UserName, MachineName
+
+    # Print the lockout events
+    Write-Output "Lockout events between $startDate and $endDate:"
+    Write-Output $events
+}
+
+# Start the workflow
+Show-LockoutEvents
+
+# Stop-Workflow -InstanceId (Get-WorkflowInstance | Where-Object { $_.Name -eq 'Show-LockoutEvents' }).InstanceId
