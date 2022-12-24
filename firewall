@@ -1,0 +1,9 @@
+# Get the firewall status
+$status = Get-NetFirewallProfile | Select-Object -ExpandProperty Enabled
+
+# Check if the firewall is disabled
+if ($status -eq 'False') {
+  Write-Output "The firewall is disabled."
+} else {
+  Write-Output "The firewall is enabled."
+}
