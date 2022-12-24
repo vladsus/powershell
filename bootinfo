@@ -1,0 +1,9 @@
+# Get the operating system information
+$OS = Get-WmiObject -Class Win32_OperatingSystem
+
+# Convert the last boot time to seconds
+$LastBootTimeInSeconds = ($OS.ConvertToDateTime($OS.LastBootUpTime)).TotalSeconds
+
+# Display the last boot time in seconds and the boot device
+Write-Output "Last boot time (in seconds): $LastBootTimeInSeconds"
+Write-Output "Boot device: $($OS.SystemDevice)"
