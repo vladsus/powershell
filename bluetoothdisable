@@ -1,0 +1,10 @@
+# Import the Device Management module
+Import-Module DeviceManagement
+
+# Get the list of Bluetooth devices
+$bluetoothDevices = Get-Device -Class Bluetooth
+
+# Disable each Bluetooth device
+foreach ($device in $bluetoothDevices) {
+    Disable-Device -InstanceId $device.InstanceId
+}
