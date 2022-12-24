@@ -1,0 +1,8 @@
+# Prompt the user for the path to search
+$Path = Read-Host "Enter the path to search"
+
+# Get the files in the specified path
+$Files = Get-ChildItem -Path $Path -File
+
+# Sort the files by size and display the name and size of each file
+$Files | Sort-Object -Property Length -Descending | Select-Object Name, Length
