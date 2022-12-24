@@ -1,0 +1,14 @@
+# Import the necessary modules
+Import-Module PSWindowsUpdate
+Import-Module PSWorkflow
+
+# Get a list of pending updates
+$updates = Get-WUList | Where-Object {$_.IsInstalled -eq $false}
+
+# Check if any pending updates were found
+if ($updates -eq $null) {
+  Write-Output "No pending updates were found."
+} else {
+  # Print the names and descriptions of pending updates
+  $updates | Select-Object Title, Description | Format-Table
+}
