@@ -1,0 +1,8 @@
+# Set the URL for the Chrome download page
+$url = 'https://www.google.com/chrome/'
+
+# Download the Chrome installer
+Invoke-WebRequest -Uri $url -OutFile 'Chrome.exe'
+
+# Run the Chrome installer
+Start-Process -FilePath 'Chrome.exe'
