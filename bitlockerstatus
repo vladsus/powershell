@@ -1,0 +1,17 @@
+# Import the BitLocker module
+Import-Module -Name 'BitLocker'
+
+# Get the BitLocker status for each volume
+$volumes = Get-BitLockerVolume
+
+# Check if any volumes are encrypted
+if ($volumes -eq $null) {
+  Write-Output "There are no encrypted volumes on this machine."
+} else {
+  # Print the BitLocker status for each volume
+  $volumes | ForEach-Object {
+    Write-Output "Volume: $($_.MountPoint)"
+    Write-Output "Encryption Status: $($_.EncryptionStatus)"
+    Write-Output "Protection Status: $($_.ProtectionStatus)"
+  }
+}
