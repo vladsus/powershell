@@ -1,0 +1,9 @@
+# Get the processes sorted by memory usage
+$processes = Get-Process | Sort-Object -Property WS -Descending
+
+# Get the top process
+$topProcess = $processes | Select-Object -First 1
+
+# Print the details of the top process
+Write-Output "Process: $($topProcess.Name)"
+Write-Output "Memory Usage: $([Math]::Round(($topProcess.WS / 1MB), 2)) MB"
