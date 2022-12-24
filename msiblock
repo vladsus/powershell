@@ -1,0 +1,17 @@
+# Import the AppLocker module
+Import-Module AppLocker
+
+# Create a new AppLocker policy
+New-AppLockerPolicy -Name "Installer Prevention Policy"
+
+# Add a rule to the policy to allow executables signed by Microsoft to run
+Add-AppLockerPolicyRule -Policy "Installer Prevention Policy" -RuleType Exe -RuleName "Microsoft-signed Executables" -Publisher "*" -Action Allow
+
+# Add a rule to the policy to block all Windows Installer files
+Add-AppLockerPolicyRule -Policy "Installer Prevention Policy" -RuleType Msi -RuleName "Windows Installer Files" -Action Deny
+
+# Add a rule to the policy to block all Windows Installer packages
+Add-AppLockerPolicyRule -Policy "Installer Prevention Policy" -RuleType Package -RuleName "Windows Installer Packages" -Action Deny
+
+# Enable the policy and apply it to the local machine
+Set-AppLockerPolicy -Policy "Installer Prevention Policy" -Enabled True -EnforcementMode AuditOnly
