@@ -1,0 +1,18 @@
+# Get the list of services sorted by status
+$services = Get-Service | Sort-Object -Property Status
+
+# Filter the stopped services
+$stoppedServices = $services | Where-Object {
+  $_.Status -eq 'Stopped'
+}
+
+# Check if any stopped services were found
+if ($stoppedServices -eq $null) {
+  Write-Output "There are no stopped services on this machine."
+} else {
+  # Print the details of each stopped service
+  $stoppedServices | ForEach-Object {
+    Write-Output "Service: $($_.Name)"
+    Write-Output "Status: $($_.Status)"
+  }
+}
