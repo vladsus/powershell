@@ -1,0 +1,10 @@
+# Import the NetTCPIP module
+Import-Module NetTCPIP
+
+# Get the current ARP cache values
+$ArpCache = Get-NetNeighbor
+
+# Iterate through each ARP cache entry and display the MAC address, IP address, and type
+foreach ($Entry in $ArpCache) {
+    Write-Output "MAC: $($Entry.HardwareAddress)  IP: $($Entry.Address)  Type: $($Entry.Type)"
+}
