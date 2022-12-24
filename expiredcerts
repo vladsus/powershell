@@ -1,0 +1,24 @@
+# Import the required modules
+Import-Module PSWorkflow
+Import-Module PSWorkflowUtility
+
+# Define the certificate store to use (LocalMachine or CurrentUser)
+$store = 'LocalMachine'
+
+# Create a workflow to list the expired certificates
+Workflow List-ExpiredCertificates {
+    # Get the current date
+    $now = Get-Date
+
+    # Get the list of certificates from the specified store
+    $certificates = Get-ChildItem -Path "cert:\$store" | Where-Object { -not $_.PSIsContainer }
+
+    # Print the expired certificates
+    Write-Output "Expired certificates:"
+    Write-Output $certificates | Where-Object { $_.NotAfter -lt $now } | Select-Object -Property Subject, Issuer, NotAfter
+}
+
+# Start the workflow
+List-ExpiredCertificates
+
+# Stop-Workflow -InstanceId (Get-WorkflowInstance | Where-Object { $_.Name -eq 'List-ExpiredCertificates' }).InstanceId
