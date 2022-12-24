@@ -1,0 +1,14 @@
+# Get the list of fixed drives on the machine
+$drives = Get-WmiObject -Class Win32_Volume | Where-Object { $_.DriveType -eq 3 }
+
+# Loop through each drive and check if it has a TPM
+foreach ($drive in $drives) {
+    # Get the drive letter and the TPM status
+    $driveLetter = $drive.DriveLetter
+    $tpmStatus = Get-BitLockerVolume -MountPoint $driveLetter | Select-Object -ExpandProperty TpmProtector
+
+    # If the drive has a TPM, encrypt it using BitLocker
+    if ($tpmStatus) {
+        Enable-BitLocker -MountPoint $driveLetter -EncryptionMethod Aes256 -UsedSpaceOnly -TpmProtector
+    }
+}
