@@ -1,0 +1,20 @@
+# Get the installed Java versions
+$JavaVersions = Get-WmiObject -Class Win32_Product | Where-Object { $_.Name -like "Java*" } | Select-Object -ExpandProperty Version
+
+# Check if any vulnerable log4j versions are being used
+foreach ($JavaVersion in $JavaVersions) {
+    # Set the path for the log4j properties file
+    $Log4jPropertiesFile = "C:\Program Files\Java\$JavaVersion\lib\log4j.properties"
+
+    # Check if the log4j properties file exists
+    if (Test-Path $Log4jPropertiesFile) {
+        # Read the contents of the log4j properties file
+        $Log4jProperties = Get-Content $Log4jPropertiesFile
+
+        # Check if a vulnerable log4j version is being used
+        if ($Log4jProperties -match "log4j.version=1\.2\.[0-1]") {
+            # A vulnerable log4j version is being used
+            Write-Output "Vulnerable log4j version detected"
+        }
+    }
+}
