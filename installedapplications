@@ -1,0 +1,14 @@
+# Get the list of installed applications
+$applications = Get-WmiObject -Class Win32_Product
+
+# Check if any applications were found
+if ($applications -eq $null) {
+  Write-Output "There are no installed applications on this machine."
+} else {
+  # Print the details of each application
+  $applications | ForEach-Object {
+    Write-Output "Application: $($_.Name)"
+    Write-Output "Version: $($_.Version)"
+    Write-Output "Publisher: $($_.Vendor)"
+  }
+}
