@@ -1,0 +1,8 @@
+# Set the URL for the Firefox download page
+$url = 'https://www.mozilla.org/en-US/firefox/download/thanks/'
+
+# Download the Firefox installer
+Invoke-WebRequest -Uri $url -OutFile 'Firefox.exe'
+
+# Run the Firefox installer
+Start-Process -FilePath 'Firefox.exe'
