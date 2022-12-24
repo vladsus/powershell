@@ -1,0 +1,12 @@
+# Get the operating system information
+$OS = Get-WmiObject -Class Win32_OperatingSystem
+
+# Extract the major version and release ID from the version string
+$Version = $OS.Version
+$MajorVersion = $Version.Split(".")[0]
+$ReleaseID = $Version.Split(".")[1]
+
+# Display the major version, release ID, and type
+Write-Output "Major version: $MajorVersion"
+Write-Output "Release ID: $ReleaseID"
+Write-Output "Type: $($OS.ProductType)"
