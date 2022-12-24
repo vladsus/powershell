@@ -1,0 +1,27 @@
+# Import the ActiveDirectory module
+Import-Module -Name 'ActiveDirectory'
+
+# Get the domain name
+$domain = Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty Domain
+
+# Get the list of computers in the domain
+$computers = Get-ADComputer -Filter * -SearchBase "DC=$($domain),DC=local" | Select-Object -ExpandProperty Name
+
+# Iterate through each computer
+$computers | ForEach-Object {
+  # Get the logged in users on the computer
+  $users = quser /server:$_
+  
+  # Check if any users are logged in
+  if ($users -eq $null) {
+    Write-Output "There are no logged in users on the computer '$_'."
+  } else {
+    # Print the details of each logged in user
+    $users | ForEach-Object {
+      Write-Output "Computer: $_"
+      Write-Output "User: $($_.USERNAME)"
+      Write-Output "Session: $($_.SESSIONNAME)"
+      Write-Output "Idle Time: $($_.IDLE TIME)"
+    }
+  }
+}
