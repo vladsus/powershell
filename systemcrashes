@@ -1,0 +1,20 @@
+# Import the necessary module
+Import-Module -Name 'WinEvent'
+
+# Set the time range for the event log search
+$startTime = (Get-Date).AddDays(-30)
+$endTime = Get-Date
+
+# Search the system event log for crashes
+$crashes = Get-WinEvent -FilterHashtable @{LogName='System'; StartTime=$startTime; EndTime=$endTime; ID=1003}
+
+# Check if any crashes were found
+if ($crashes -eq $null) {
+  Write-Output "No system crashes were found in the last 30 days."
+} else {
+  # Print the details of each crash
+  $crashes | ForEach-Object {
+    Write-Output "Date: $($_.TimeCreated)"
+    Write-Output "Description: $($_.Message)"
+  }
+}
