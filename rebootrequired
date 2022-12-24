@@ -1,0 +1,26 @@
+# Import the ActiveDirectory module
+Import-Module -Name 'ActiveDirectory'
+
+# Get the computers in the domain
+$computers = Get-ADComputer -Filter *
+
+# Check if any computers were found
+if ($computers -eq $null) {
+  Write-Output "There are no computers in the domain."
+} else {
+  # Check if each computer needs a reboot
+  $computers | ForEach-Object {
+    $computer = $_.Name
+    Write-Output "Checking computer: $computer"
+    $status = Invoke-Command -ComputerName $computer -ScriptBlock {
+      # Check if the computer needs a reboot
+      $pendingReboot = Test-Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired'
+      if ($pendingReboot) {
+        Write-Output "The computer needs a reboot."
+      } else {
+        Write-Output "The computer does not need a reboot."
+      }
+    }
+    Write-Output $status
+  }
+}
