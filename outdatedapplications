@@ -1,0 +1,24 @@
+# Set the search path for applications
+$searchPath = "C:\Program Files"
+
+# Get a list of installed applications
+$applications = Get-ChildItem $searchPath -Recurse | Where-Object {$_.Extension -eq ".exe"}
+
+# Check if any applications were found
+if ($applications -eq $null) {
+  Write-Output "No applications were found."
+} else {
+  # Check for updates for each application
+  foreach ($application in $applications) {
+    # Get the application version
+    $version = (Get-ItemProperty -Path $application.FullName).FileVersion
+
+    # Check if the application has an update available
+    $update = Get-WUInstall -ApplicationName $application.Name -ApplicationType EXE -RequiredApplicationVersion $version
+
+    # Print the name and version of outdated applications
+    if ($update -eq $null) {
+      Write-Output "$($application.Name) version $($version) is outdated."
+    }
+  }
+}
