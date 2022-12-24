@@ -1,0 +1,41 @@
+# Import the required modules
+Import-Module PSWorkflow
+Import-Module PSWorkflowUtility
+
+# Prompt the user for the registry key to monitor
+$registryKey = Read-Host "Enter the registry key to monitor (e.g. HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion)"
+
+# Define the interval at which to check for changes (in seconds)
+$interval = 300
+
+# Create a workflow to monitor the registry key
+Workflow Monitor-RegistryKey {
+    # Initialize the previous values hash table
+    $prevValues = @{}
+
+    # Define a loop that will run indefinitely
+    while (1) {
+        # Get the current values for the registry key
+        $currValues = Get-ItemProperty -Path $registryKey -ErrorAction Ignore
+
+        # Compare the current and previous values
+        $diff = Compare-Object $currValues $prevValues
+
+        # If there are any differences, print the results
+        if ($diff) {
+            Write-Output "Changes detected in the registry key $registryKey:"
+            Write-Output $diff | Select-Object -Property InputObject, SideIndicator
+        }
+
+        # Update the previous values
+        $prevValues = $currValues
+
+        # Wait for the specified interval before checking again
+        Start-Sleep -Seconds $interval
+    }
+}
+
+# Start the workflow
+Monitor-RegistryKey
+
+# Stop-Workflow -InstanceId (Get-WorkflowInstance | Where-Object { $_.Name -eq 'Monitor-RegistryKey' }).InstanceId
