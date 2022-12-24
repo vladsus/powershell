@@ -1,0 +1,17 @@
+# Get the USB storage devices
+$devices = Get-WmiObject -Class Win32_USBHub | Where-Object {
+  $_.PNPDeviceID -like 'USBSTOR*'
+}
+
+# Check if any devices were found
+if ($devices -eq $null) {
+  Write-Output "There are no USB storage devices connected to this machine."
+} else {
+  # Print the details of each device
+  $devices | ForEach-Object {
+    Write-Output "Device: $($_.DeviceID)"
+    Write-Output "Manufacturer: $($_.Manufacturer)"
+    Write-Output "Model: $($_.Caption)"
+    Write-Output "Serial Number: $($_.SerialNumber)"
+  }
+}
