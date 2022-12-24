@@ -1,0 +1,28 @@
+# Prompt the user to enter a CVE ID
+$cveId = Read-Host "Enter a CVE ID"
+
+# Use the Get-Hotfix cmdlet to retrieve a list of all installed hotfixes on the machine
+$hotfixes = Get-Hotfix
+
+# Check if any of the hotfixes installed on the machine are related to the specified CVE ID
+$matchingHotfix = $hotfixes | Where-Object { $_.HotFixID -match $cveId }
+if ($matchingHotfix) {
+  # A hotfix related to the specified CVE ID was found
+  Write-Output "$cveId: NOT VULNERABLE"
+} else {
+  # No hotfix related to the specified CVE ID was found
+  Write-Output "$cveId: VULNERABLE"
+}
+
+# Use the Get-WmiObject cmdlet to query the Win32_Product WMI class, which returns a list of all installed software on the machine
+$installedSoftware = Get-WmiObject -Class Win32_Product
+
+# Check the Name property of each Win32_Product object to see if it contains the specified CVE ID
+$matchingSoftware = $installedSoftware | Where-Object { $_.Name -match $cveId }
+if ($matchingSoftware) {
+  # Software related to the specified CVE ID was found
+  Write-Output "$cveId: NOT VULNERABLE"
+} else {
+  # No software related to the specified CVE ID was found
+  Write-Output "$cveId: VULNERABLE"
+}
